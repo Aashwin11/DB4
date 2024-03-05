@@ -1,0 +1,51 @@
+create table Student (usn varchar(20) , Sname varchar(20),Address varchar(20),Phone int(10),Gender char(1), primary key(usn));
+desc Student;
+create table Semsec (ssid int,sem int,sec char(1),primary key(ssid));
+desc Semsec;
+create table Class(usn varchar(20),ssid int,primary key(usn,ssid),foreign key(usn) references Student(usn),foreign key(ssid) references Semsec(ssid));
+desc Class;
+create table Course(subcode varchar(20),title varchar(20),sem int,credits int, primary key(subcode));
+desc Course;
+create table Iamarks(usn varchar(20), subcode varchar(20),ssid int, test1 int ,test2 int,test3 int,finalIa int , primary key(usn,subcode,ssid) ,foreign key(usn) references Student(usn),foreign key(ssid) references Semsec(ssid),foreign key (subcode) references Course (subcode));
+desc Iamarks;
+
+
+-- INSERTION
+insert into Student values ("1bil14cs101","Danny","555itpl",987654321,"M"),("1bil14cs102","Stanley","555 Marathalli",987654321,"M"),("1bil15cs101","John","555itpl",987654321,"M"), ("1bil15cs102","Grace","44 Whitefield",987654321,"F");
+insert into Student values ("1bil15cs103","Clair","33 JP NAgar",987654321,"F"),("1bil15cs104","Miller","94 jayanagar",987654321,"M"),("1bil15cs105","Kate","3 Jp Nagar",987654321,"F"), ("1bil15cs106","Jade","9 Jayanagar",987654321,"F");
+insert into Student values ("1bil16cs109","Gloria","11 Beml Raod",987654321,"F"),("1bil16cs110","Jack","54 Aecs",987654321,"M");
+select * from Student;
+
+insert into Semsec values(101,2,"A"),(102,4,"B"),(103,6,"C");
+insert into Semsec values(104,8,"D"),(105,2,"B"),(106,8,"B");
+insert into Semsec values(107,8,"D"),(108,4,"C"),(109,4,"C");
+insert into Semsec values(110,4,"C");
+select * from Semsec;
+
+insert into Class values("1bil14cs101",106),("1bil14cs102",107),("1bil15cs101",103);
+insert into Class values("1bil15cs102",101),("1bil15cs103",102),("1bil15cs104",108);
+insert into Class values("1bil15cs105",109),("1bil15cs106",110),("1bil16cs109",104);
+select * from Class;
+
+insert into Course values("13cs81","OAMD",8,6),("13cs82","SA",8,2),("14cs62","SS",6,4);
+insert into Course values("15cs41","ST",4,4),("15cs42","SE",4,6),("16cs22","OS",2,8);
+select * from Course;
+
+insert into Iamarks (usn,subcode,ssid,test1,test2,test3) values("1bil14cs101","16cs22",106,6,5,10),("1bil14cs102","14cs62",107,14,15,16);
+insert into Iamarks (usn,subcode,ssid,test1,test2,test3) values("1bil15cs101","15cs41",104,13,20,20),("1bil15cs101","15cs42",103,18,20,20);
+insert into Iamarks (usn,subcode,ssid,test1,test2,test3) values("1bil15cs102","15cs41",101,13,14,14),("1bil16cs109","13cs82",102,20,20,20);
+select * from Iamarks;
+
+-- Queires
+select s.* from Student s, Semsec ss , Class c where s.usn=c.usn and ss.ssid=c.ssid and ss.sem=4 and ss.sec='C';
+select sem , sec, Gender, count(Gender) from Student Natural Join Semsec NATURAL JOIN Class group by sem, sec, gender;
+create view test1_view as select usn,subcode,test1 from Iamarks where usn='1bil15cs101';
+select * from test1_view;
+delimiter #
+create procedure CalFA1() BEGIN update Iamarks set finalIa=(CASE when GREATEST(test1,test2) != GREATEST(test1,test3) then GREATEST(test1,test2)+GREATEST(test1,test3) else GREATEST(test1,test2)+GREATEST(test2,test3) END)/2 where finalIa is NULL; END#
+delimiter ;
+call CalFA1();
+select * from Iamarks;
+
+(SELECT I.usn, subcode, 'OUTSTANDING' AS CATEGORY FROM Iamarks I, Class C, Semsec SS
+ WHERE I.usn = C.usn AND C.ssid = SS.ssid AND finalIa BETWEEN 17 AND 20 AND sem = 8 AND sec IN ('A', 'B', 'C', 'D')) UNION (SELECT I.usn, subcode, 'AVERAGE' AS CATEGORY FROM Iamarks I, Class C, Semsec SS WHERE I.usn = C.usn AND C.ssid = SS.ssid AND finalIa BETWEEN 12 AND 16 AND sem = 8 AND sec IN ('A', 'B', 'C', 'D')) UNION (SELECT I.usn, subcode, 'WEAK' AS CATEGORY FROM Iamarks I, Class C, Semsec SS WHERE I.usn = C.usn AND C.ssid = SS.ssid AND finalIa < 12 AND sem = 8 AND sec IN ('A', 'B', 'C', 'D'));
