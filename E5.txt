@@ -1,0 +1,504 @@
+MariaDB [(none)]> use LibraryDB_219;
+Database changed
+MariaDB [LibraryDB_219]> create table PUBLISHER(Publisher_name varchar(255) primary key, Address varchar(255),Phone int);
+Query OK, 0 rows affected (0.015 sec)
+
+MariaDB [LibraryDB_219]> create table BOOK(Book_id int primary key, Title varchar(255),Publisher_name varchar(255),Pub_Year int(4), foreign key(Publisher_name) references PUBLISHER(Publisher_name)on delete cascade);
+Query OK, 0 rows affected (0.088 sec)
+
+MariaDB [LibraryDB_219]> create table BOOK_AUTHORS(Book_id int, Author_name varchar(255), foreign key(Book_id) references BOOK(Book_id) on delete cascade);
+Query OK, 0 rows affected (0.019 sec)
+
+MariaDB [LibraryDB_219]> create table LIBRARY_BRANCH(Branch_id int primary key, Branch_name varchar(255), Address varchar(255));
+Query OK, 0 rows affected (0.015 sec)
+
+MariaDB [LibraryDB_219]> create table BOOK_COPIES(Book_id int, Branch_id int, Copies int, primary key(Book_id,Branch_id), foreign key(Book_id) references BOOK(Book_id) on delete cascade, foreign key(Branch_id) references LIBRARY_BRANCH(Branch_id) on delete cascade);
+Query OK, 0 rows affected (0.087 sec)
+
+MariaDB [LibraryDB_219]> create table BOOK_LENDING(Book_id int, Branch_id int, Card_no int, Date_out date, Due_date date, primary key(Book_id,Branch_id,Card_no), foreign key(Book_id) references BOOK(Book_id) on delete cascade, foreign key(Branch_id) references LIBRARY_BRANCH(Branch_id) on delete cascade);
+Query OK, 0 rows affected (0.019 sec)
+
+MariaDB [LibraryDB_219]> insert into PUBLISHER values("cambridge", "delhi", 900009876);
+Query OK, 1 row affected (0.004 sec)
+
+MariaDB [LibraryDB_219]> insert into PUBLISHER values("dreamworks", "chennai", 900008876);
+Query OK, 1 row affected (0.002 sec)
+
+MariaDB [LibraryDB_219]> insert into PUBLISHER values("fox", "pune", 900007876);
+Query OK, 1 row affected (0.003 sec)
+
+MariaDB [LibraryDB_219]> insert into PUBLISHER values("pearson", "bangalore", 900006876);
+Query OK, 1 row affected (0.002 sec)
+
+MariaDB [LibraryDB_219]> insert into PUBLISHER values("tata", "mumbai", 900005876);
+Query OK, 1 row affected (0.004 sec)
+
+MariaDB [LibraryDB_219]> select * from PUBLISHER;
++----------------+-----------+-----------+
+| Publisher_name | Address   | Phone     |
++----------------+-----------+-----------+
+| cambridge      | delhi     | 900009876 |
+| dreamworks     | chennai   | 900008876 |
+| fox            | pune      | 900007876 |
+| pearson        | bangalore | 900006876 |
+| tata           | mumbai    | 900005876 |
++----------------+-----------+-----------+
+5 rows in set (0.001 sec)
+
+MariaDB [LibraryDB_219]> insert into BOOK values(1001,"software engineering","pearson",1998);
+Query OK, 1 row affected (0.004 sec)
+
+MariaDB [LibraryDB_219]> insert into BOOK values(1002,"digital image processing","tata",1998);
+Query OK, 1 row affected (0.002 sec)
+
+MariaDB [LibraryDB_219]> insert into BOOK values(1003,"computer architecture","dreamworks",1998);
+Query OK, 1 row affected (0.004 sec)
+
+MariaDB [LibraryDB_219]> insert into BOOK values(1004,"data structures","fox",1998);
+Query OK, 1 row affected (0.002 sec)
+
+MariaDB [LibraryDB_219]> insert into BOOK values(1005,"dbms","cambridge",1998);
+Query OK, 1 row affected (0.004 sec)
+
+MariaDB [LibraryDB_219]> select * from BOOK;
++---------+--------------------------+----------------+----------+
+| Book_id | Title                    | Publisher_name | Pub_Year |
++---------+--------------------------+----------------+----------+
+|    1001 | software engineering     | pearson        |     1998 |
+|    1002 | digital image processing | tata           |     1998 |
+|    1003 | computer architecture    | dreamworks     |     1998 |
+|    1004 | data structures          | fox            |     1998 |
+|    1005 | dbms                     | cambridge      |     1998 |
++---------+--------------------------+----------------+----------+
+5 rows in set (0.001 sec)
+
+MariaDB [LibraryDB_219]> insert into BOOK_AUTHORS values(1001,"Samuel Simons");
+Query OK, 1 row affected (0.004 sec)
+
+MariaDB [LibraryDB_219]> insert into BOOK_AUTHORS values(1002,"Morris Mano");
+Query OK, 1 row affected (0.002 sec)
+
+MariaDB [LibraryDB_219]> insert into BOOK_AUTHORS values(1003,"G Navathe");
+Query OK, 1 row affected (0.006 sec)
+
+MariaDB [LibraryDB_219]> insert into BOOK_AUTHORS values(1004,"Christopher Nolan");
+Query OK, 1 row affected (0.001 sec)
+
+MariaDB [LibraryDB_219]> insert into BOOK_AUTHORS values(1005,"Chris Hemsworth");
+Query OK, 1 row affected (0.002 sec)
+
+MariaDB [LibraryDB_219]> select * from BOOK_AUTHORS;
++---------+-------------------+
+| Book_id | Author_name       |
++---------+-------------------+
+|    1001 | Samuel Simons     |
+|    1002 | Morris Mano       |
+|    1003 | G Navathe         |
+|    1004 | Christopher Nolan |
+|    1005 | Chris Hemsworth   |
++---------+-------------------+
+5 rows in set (0.001 sec)
+
+MariaDB [LibraryDB_219]> insert into LIBRARY_BRANCH values(1,"CMRIT","Bangalore");
+Query OK, 1 row affected (0.072 sec)
+
+MariaDB [LibraryDB_219]> insert into LIBRARY_BRANCH values(2,"RV","Bangalore");
+Query OK, 1 row affected (0.003 sec)
+
+MariaDB [LibraryDB_219]> insert into LIBRARY_BRANCH values(3,"PES","Mumbai");
+Query OK, 1 row affected (0.003 sec)
+
+MariaDB [LibraryDB_219]> insert into LIBRARY_BRANCH values(4,"CU","Chandigarh");
+Query OK, 1 row affected (0.002 sec)
+
+MariaDB [LibraryDB_219]> insert into LIBRARY_BRANCH values(5,"CGC","Pune");
+Query OK, 1 row affected (0.004 sec)
+
+MariaDB [LibraryDB_219]> select * from LIBRARY_BRANCH;
++-----------+-------------+------------+
+| Branch_id | Branch_name | Address    |
++-----------+-------------+------------+
+|         1 | CMRIT       | Bangalore  |
+|         2 | RV          | Bangalore  |
+|         3 | PES         | Mumbai     |
+|         4 | CU          | Chandigarh |
+|         5 | CGC         | Pune       |
++-----------+-------------+------------+
+5 rows in set (0.001 sec)
+
+MariaDB [LibraryDB_219]> insert into BOOK_COPIES values(1001,1,50);
+Query OK, 1 row affected (0.072 sec)
+
+MariaDB [LibraryDB_219]> insert into BOOK_COPIES values(1001,2,10);
+Query OK, 1 row affected (0.003 sec)
+
+MariaDB [LibraryDB_219]> insert into BOOK_COPIES values(1002,3,80);
+Query OK, 1 row affected (0.010 sec)
+
+MariaDB [LibraryDB_219]> insert into BOOK_COPIES values(1003,5,90);
+Query OK, 1 row affected (0.007 sec)
+
+MariaDB [LibraryDB_219]> insert into BOOK_COPIES values(1005,3,60);
+Query OK, 1 row affected (0.001 sec)
+
+MariaDB [LibraryDB_219]> select * from BOOK_COPIES;
++---------+-----------+--------+
+| Book_id | Branch_id | Copies |
++---------+-----------+--------+
+|    1001 |         1 |     50 |
+|    1001 |         2 |     10 |
+|    1002 |         3 |     80 |
+|    1003 |         5 |     90 |
+|    1005 |         3 |     60 |
++---------+-----------+--------+
+5 rows in set (0.001 sec)
+
+MariaDB [LibraryDB_219]>
+MariaDB [LibraryDB_219]> insert into BOOK_LENDING values(1001,1,A501,"2017-01-01","2017-06-30");
+ERROR 1054 (42S22): Unknown column 'A501' in 'field list'
+MariaDB [LibraryDB_219]> insert into BOOK_LENDING values(1002,1,A501,"2017-04-15","2017-05-26");
+ERROR 1054 (42S22): Unknown column 'A501' in 'field list'
+MariaDB [LibraryDB_219]> insert into BOOK_LENDING values(1002,2,A544,"2017-01-15","2017-06-25");
+ERROR 1054 (42S22): Unknown column 'A544' in 'field list'
+MariaDB [LibraryDB_219]> insert into BOOK_LENDING values(1002,5,A701,"2017-01-02","2017-01-26");
+ERROR 1054 (42S22): Unknown column 'A701' in 'field list'
+MariaDB [LibraryDB_219]> insert into BOOK_LENDING values(1003,1,A501,"2017-03-15","2017-06-26");
+ERROR 1054 (42S22): Unknown column 'A501' in 'field list'
+MariaDB [LibraryDB_219]> insert into BOOK_LENDING values(1003,1,A599,"2017-04-01","2017-05-16");
+ERROR 1054 (42S22): Unknown column 'A599' in 'field list'
+MariaDB [LibraryDB_219]> insert into BOOK_LENDING values(1003,5,A701,"2017-01-25","2017-02-26");
+ERROR 1054 (42S22): Unknown column 'A701' in 'field list'
+MariaDB [LibraryDB_219]> insert into BOOK_LENDING values(1005,1,A501,"2017-01-25","2017-06-26");
+ERROR 1054 (42S22): Unknown column 'A501' in 'field list'
+MariaDB [LibraryDB_219]> insert into BOOK_LENDING values(1005,4,A601,"2017-07-04","2017-07-30");
+ERROR 1054 (42S22): Unknown column 'A601' in 'field list'
+MariaDB [LibraryDB_219]> insert into BOOK_LENDING values(1005,5,A701,"2017-01-25","2017-06-26");
+ERROR 1054 (42S22): Unknown column 'A701' in 'field list'
+MariaDB [LibraryDB_219]> insert into BOOK_LENDING values(1005,5,A701,"2017-02-05","2017-03-21");
+ERROR 1054 (42S22): Unknown column 'A701' in 'field list'
+MariaDB [LibraryDB_219]> insert into BOOK_LENDING values(1001,1,501,"2017-01-01","2017-06-30");
+Query OK, 1 row affected (0.070 sec)
+
+MariaDB [LibraryDB_219]> insert into BOOK_LENDING values(1002,1,501,"2017-04-15","2017-05-26");
+Query OK, 1 row affected (0.003 sec)
+
+MariaDB [LibraryDB_219]> insert into BOOK_LENDING values(1002,2,501,"2017-01-15","2017-06-25");
+Query OK, 1 row affected (0.004 sec)
+
+MariaDB [LibraryDB_219]> insert into BOOK_LENDING values(1002,5,501,"2017-01-02","2017-01-26");
+Query OK, 1 row affected (0.002 sec)
+
+MariaDB [LibraryDB_219]> insert into BOOK_LENDING values(1003,1,501,"2017-03-15","2017-06-26");
+Query OK, 1 row affected (0.002 sec)
+
+MariaDB [LibraryDB_219]> insert into BOOK_LENDING values(1003,1,501,"2017-04-01","2017-05-16");
+ERROR 1062 (23000): Duplicate entry '1003-1-501' for key 'PRIMARY'
+MariaDB [LibraryDB_219]> insert into BOOK_LENDING values(1003,5,501,"2017-01-25","2017-02-26");
+Query OK, 1 row affected (0.002 sec)
+
+MariaDB [LibraryDB_219]> insert into BOOK_LENDING values(1005,1,501,"2017-01-25","2017-06-26");
+Query OK, 1 row affected (0.002 sec)
+
+MariaDB [LibraryDB_219]> insert into BOOK_LENDING values(1005,4,501,"2017-07-04","2017-07-30");
+Query OK, 1 row affected (0.001 sec)
+
+MariaDB [LibraryDB_219]> insert into BOOK_LENDING values(1005,5,501,"2017-01-25","2017-06-26");
+Query OK, 1 row affected (0.002 sec)
+
+MariaDB [LibraryDB_219]> insert into BOOK_LENDING values(1005,5,501,"2017-02-05","2017-03-21");
+ERROR 1062 (23000): Duplicate entry '1005-5-501' for key 'PRIMARY'
+MariaDB [LibraryDB_219]> delete from BOOK_LENDING;
+Query OK, 9 rows affected (0.004 sec)
+
+MariaDB [LibraryDB_219]>
+MariaDB [LibraryDB_219]> insert into BOOK_LENDING values(1001,1,501,"2017-01-01","2017-06-30");
+Query OK, 1 row affected (0.005 sec)
+
+MariaDB [LibraryDB_219]> insert into BOOK_LENDING values(1002,1,501,"2017-04-15","2017-05-26");
+Query OK, 1 row affected (0.002 sec)
+
+MariaDB [LibraryDB_219]> insert into BOOK_LENDING values(1002,2,544,"2017-01-15","2017-06-25");
+Query OK, 1 row affected (0.004 sec)
+
+MariaDB [LibraryDB_219]> insert into BOOK_LENDING values(1002,5,701,"2017-01-02","2017-01-26");
+Query OK, 1 row affected (0.002 sec)
+
+MariaDB [LibraryDB_219]> insert into BOOK_LENDING values(1003,1,501,"2017-03-15","2017-06-26");
+Query OK, 1 row affected (0.001 sec)
+
+MariaDB [LibraryDB_219]> insert into BOOK_LENDING values(1003,1,599,"2017-04-01","2017-05-16");
+Query OK, 1 row affected (0.002 sec)
+
+MariaDB [LibraryDB_219]> insert into BOOK_LENDING values(1003,5,701,"2017-01-25","2017-02-26");
+Query OK, 1 row affected (0.001 sec)
+
+MariaDB [LibraryDB_219]> insert into BOOK_LENDING values(1005,1,501,"2017-01-25","2017-06-26");
+Query OK, 1 row affected (0.002 sec)
+
+MariaDB [LibraryDB_219]> insert into BOOK_LENDING values(1005,4,601,"2017-07-04","2017-07-30");
+Query OK, 1 row affected (0.001 sec)
+
+MariaDB [LibraryDB_219]> insert into BOOK_LENDING values(1005,5,701,"2017-01-25","2017-06-26");
+Query OK, 1 row affected (0.002 sec)
+
+MariaDB [LibraryDB_219]> insert into BOOK_LENDING values(1005,5,701,"2017-02-05","2017-03-21");
+ERROR 1062 (23000): Duplicate entry '1005-5-701' for key 'PRIMARY'
+MariaDB [LibraryDB_219]> delete from BOOK_LENDING;
+Query OK, 10 rows affected (0.005 sec)
+
+MariaDB [LibraryDB_219]>
+MariaDB [LibraryDB_219]> insert into BOOK_LENDING values(1001,1,501,"2017-01-01","2017-06-30");
+Query OK, 1 row affected (0.004 sec)
+
+MariaDB [LibraryDB_219]> insert into BOOK_LENDING values(1002,1,501,"2017-04-15","2017-05-26");
+Query OK, 1 row affected (0.002 sec)
+
+MariaDB [LibraryDB_219]> insert into BOOK_LENDING values(1002,2,544,"2017-01-15","2017-06-25");
+Query OK, 1 row affected (0.005 sec)
+
+MariaDB [LibraryDB_219]> insert into BOOK_LENDING values(1002,5,701,"2017-01-02","2017-01-26");
+Query OK, 1 row affected (0.002 sec)
+
+MariaDB [LibraryDB_219]> insert into BOOK_LENDING values(1003,1,501,"2017-03-15","2017-06-26");
+Query OK, 1 row affected (0.001 sec)
+
+MariaDB [LibraryDB_219]> insert into BOOK_LENDING values(1003,1,599,"2017-04-01","2017-05-16");
+Query OK, 1 row affected (0.002 sec)
+
+MariaDB [LibraryDB_219]> insert into BOOK_LENDING values(1003,5,701,"2017-01-25","2017-02-26");
+Query OK, 1 row affected (0.001 sec)
+
+MariaDB [LibraryDB_219]> insert into BOOK_LENDING values(1005,1,501,"2017-01-25","2017-06-26");
+Query OK, 1 row affected (0.002 sec)
+
+MariaDB [LibraryDB_219]> insert into BOOK_LENDING values(1005,4,601,"2017-07-04","2017-07-30");
+Query OK, 1 row affected (0.002 sec)
+
+MariaDB [LibraryDB_219]> insert into BOOK_LENDING values(1004,5,701,"2017-01-25","2017-06-26");
+Query OK, 1 row affected (0.001 sec)
+MariaDB [LibraryDB_219]> insert into BOOK_LENDING values(1005,5,701,"2017-02-05","2017-03-21");
+Query OK, 1 row affected (0.004 sec)
+
+MariaDB [LibraryDB_219]> select * from BOOK_LENDING;
++---------+-----------+---------+------------+------------+
+| Book_id | Branch_id | Card_no | Date_out   | Due_date   |
++---------+-----------+---------+------------+------------+
+|    1001 |         1 |     501 | 2017-01-01 | 2017-06-30 |
+|    1002 |         1 |     501 | 2017-04-15 | 2017-05-26 |
+|    1002 |         2 |     544 | 2017-01-15 | 2017-06-25 |
+|    1002 |         5 |     701 | 2017-01-02 | 2017-01-26 |
+|    1003 |         1 |     501 | 2017-03-15 | 2017-06-26 |
+|    1003 |         1 |     599 | 2017-04-01 | 2017-05-16 |
+|    1003 |         5 |     701 | 2017-01-25 | 2017-02-26 |
+|    1004 |         5 |     701 | 2017-01-25 | 2017-06-26 |
+|    1005 |         1 |     501 | 2017-01-25 | 2017-06-26 |
+|    1005 |         4 |     601 | 2017-07-04 | 2017-07-30 |
+|    1005 |         5 |     701 | 2017-02-05 | 2017-03-21 |
++---------+-----------+---------+------------+------------+
+11 rows in set (0.001 sec)
+
+MariaDB [LibraryDB_219]> SELECT C. PROGRAMME_ID, B. BOOK_ID, B. TITLE, B.PUB_NAME,
+    -> A.AUTHOR_NAME,C.NO_OF_COPIES
+    -> FROM BOOK B, BOOK_AUTHOR A, BOOK_COPIES C
+    -> WHERE B. BOOK_ID=A.BOOK_ID AND B. BOOK_ID=C.BOOK_ID
+    -> ORDER BY C.PROGRAMME_ID;
+ERROR 1146 (42S02): Table 'LibraryDB_219.BOOK_AUTHOR' doesn't exist
+MariaDB [LibraryDB_219]> show tables;
++-------------------------+
+| Tables_in_LibraryDB_219 |
++-------------------------+
+| BOOK                    |
+| BOOK_AUTHORS            |
+| BOOK_COPIES             |
+| BOOK_LENDING            |
+| LIBRARY_BRANCH          |
+| PUBLISHER               |
++-------------------------+
+6 rows in set (0.001 sec)
+
+MariaDB [LibraryDB_219]> desc BOOK;
++----------------+--------------+------+-----+---------+-------+
+| Field          | Type         | Null | Key | Default | Extra |
++----------------+--------------+------+-----+---------+-------+
+| Book_id        | int(11)      | NO   | PRI | NULL    |       |
+| Title          | varchar(255) | YES  |     | NULL    |       |
+| Publisher_name | varchar(255) | YES  | MUL | NULL    |       |
+| Pub_Year       | int(4)       | YES  |     | NULL    |       |
++----------------+--------------+------+-----+---------+-------+
+4 rows in set (0.003 sec)
+
+MariaDB [LibraryDB_219]> desc BOOK_AUTHORS;
++-------------+--------------+------+-----+---------+-------+
+| Field       | Type         | Null | Key | Default | Extra |
++-------------+--------------+------+-----+---------+-------+
+| Book_id     | int(11)      | YES  | MUL | NULL    |       |
+| Author_name | varchar(255) | YES  |     | NULL    |       |
++-------------+--------------+------+-----+---------+-------+
+2 rows in set (0.001 sec)
+
+MariaDB [LibraryDB_219]> desc BOOK_COPIES;
++-----------+---------+------+-----+---------+-------+
+| Field     | Type    | Null | Key | Default | Extra |
++-----------+---------+------+-----+---------+-------+
+| Book_id   | int(11) | NO   | PRI | NULL    |       |
+| Branch_id | int(11) | NO   | PRI | NULL    |       |
+| Copies    | int(11) | YES  |     | NULL    |       |
++-----------+---------+------+-----+---------+-------+
+3 rows in set (0.001 sec)
+
+MariaDB [LibraryDB_219]> desc BOOK_LENDING;
++-----------+---------+------+-----+---------+-------+
+| Field     | Type    | Null | Key | Default | Extra |
++-----------+---------+------+-----+---------+-------+
+| Book_id   | int(11) | NO   | PRI | NULL    |       |
+| Branch_id | int(11) | NO   | PRI | NULL    |       |
+| Card_no   | int(11) | NO   | PRI | NULL    |       |
+| Date_out  | date    | YES  |     | NULL    |       |
+| Due_date  | date    | YES  |     | NULL    |       |
++-----------+---------+------+-----+---------+-------+
+5 rows in set (0.001 sec)
+
+MariaDB [LibraryDB_219]> desc LIBRARY_BRANCH;
++-------------+--------------+------+-----+---------+-------+
+| Field       | Type         | Null | Key | Default | Extra |
++-------------+--------------+------+-----+---------+-------+
+| Branch_id   | int(11)      | NO   | PRI | NULL    |       |
+| Branch_name | varchar(255) | YES  |     | NULL    |       |
+| Address     | varchar(255) | YES  |     | NULL    |       |
++-------------+--------------+------+-----+---------+-------+
+3 rows in set (0.001 sec)
+
+MariaDB [LibraryDB_219]> desc PUBLISHER;
++----------------+--------------+------+-----+---------+-------+
+| Field          | Type         | Null | Key | Default | Extra |
++----------------+--------------+------+-----+---------+-------+
+| Publisher_name | varchar(255) | NO   | PRI | NULL    |       |
+| Address        | varchar(255) | YES  |     | NULL    |       |
+| Phone          | int(11)      | YES  |     | NULL    |       |
++----------------+--------------+------+-----+---------+-------+
+3 rows in set (0.001 sec)
+
+MariaDB [LibraryDB_219]> select Ctrl-C -- exit!
+Aborted
+(base) student@csel5sys22-OptiPlex-3090:/opt/lampp/bin$ sudo ./mysql -u root;
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 12
+Server version: 10.4.28-MariaDB Source distribution
+
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> use LibraryDB_219;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+MariaDB [LibraryDB_219]> SELECT C. Branch_id, B. Book_id, B. Title, B.Publisher_name,
+    -> A.Author_name ,C.Copies
+    -> FROM BOOK B, BOOK_AUTHORS A, BOOK_COPIES C
+    -> WHERE B. Book_id=A.Book_id AND B. Book_id=C.Book_id
+    -> ORDER BY C.Branch_id;
++-----------+---------+--------------------------+----------------+-----------------+--------+
+| Branch_id | Book_id | Title                    | Publisher_name | Author_name     | Copies |
++-----------+---------+--------------------------+----------------+-----------------+--------+
+|         1 |    1001 | software engineering     | pearson        | Samuel Simons   |     50 |
+|         2 |    1001 | software engineering     | pearson        | Samuel Simons   |     10 |
+|         3 |    1002 | digital image processing | tata           | Morris Mano     |     80 |
+|         3 |    1005 | dbms                     | cambridge      | Chris Hemsworth |     60 |
+|         5 |    1003 | computer architecture    | dreamworks     | G Navathe       |     90 |
++-----------+---------+--------------------------+----------------+-----------------+--------+
+5 rows in set (0.035 sec)
+
+MariaDB [LibraryDB_219]> SELECT Card_no
+    -> FROM
+    -> BOOK_LENDING
+    -> WHERE Date_out >= '2017-01-01' AND Date_out <='2017-06-30'
+    -> GROUP BY Card_no
+    -> HAVING COUNT(*)>3;
++---------+
+| Card_no |
++---------+
+|     501 |
+|     701 |
++---------+
+2 rows in set (0.004 sec)
+
+MariaDB [LibraryDB_219]> DELETE FROM BOOK
+    -> WHERE Book_id=1005;
+Query OK, 1 row affected (0.070 sec)
+
+MariaDB [LibraryDB_219]> select * from BOOK;
++---------+--------------------------+----------------+----------+
+| Book_id | Title                    | Publisher_name | Pub_Year |
++---------+--------------------------+----------------+----------+
+|    1001 | software engineering     | pearson        |     1998 |
+|    1002 | digital image processing | tata           |     1998 |
+|    1003 | computer architecture    | dreamworks     |     1998 |
+|    1004 | data structures          | fox            |     1998 |
++---------+--------------------------+----------------+----------+
+4 rows in set (0.000 sec)
+
+MariaDB [LibraryDB_219]> select * from BOOK_LENDING;
++---------+-----------+---------+------------+------------+
+| Book_id | Branch_id | Card_no | Date_out   | Due_date   |
++---------+-----------+---------+------------+------------+
+|    1001 |         1 |     501 | 2017-01-01 | 2017-06-30 |
+|    1002 |         1 |     501 | 2017-04-15 | 2017-05-26 |
+|    1002 |         2 |     544 | 2017-01-15 | 2017-06-25 |
+|    1002 |         5 |     701 | 2017-01-02 | 2017-01-26 |
+|    1003 |         1 |     501 | 2017-03-15 | 2017-06-26 |
+|    1003 |         1 |     599 | 2017-04-01 | 2017-05-16 |
+|    1003 |         5 |     701 | 2017-01-25 | 2017-02-26 |
+|    1004 |         5 |     701 | 2017-01-25 | 2017-06-26 |
++---------+-----------+---------+------------+------------+
+8 rows in set (0.000 sec)
+
+MariaDB [LibraryDB_219]> select * from BOOK_COPIES;
++---------+-----------+--------+
+| Book_id | Branch_id | Copies |
++---------+-----------+--------+
+|    1001 |         1 |     50 |
+|    1001 |         2 |     10 |
+|    1002 |         3 |     80 |
+|    1003 |         5 |     90 |
++---------+-----------+--------+
+4 rows in set (0.000 sec)
+
+MariaDB [LibraryDB_219]> CREATE VIEW V_PUB
+    -> AS
+    -> SELECT Pub_Year
+    -> FROM BOOK;
+Query OK, 0 rows affected (0.004 sec)
+
+MariaDB [LibraryDB_219]> SELECT * FROM V_PUB;
++----------+
+| Pub_Year |
++----------+
+|     1998 |
+|     1998 |
+|     1998 |
+|     1998 |
++----------+
+4 rows in set (0.001 sec)
+
+MariaDB [LibraryDB_219]> CREATE VIEW V_BOOKS AS
+    -> SELECT B. Book_id, B.Title, C.Copies
+    -> FROM BOOK B, BOOK_COPIES C, LIBRARY_BRANCH L
+    -> WHERE B. Book_id=C.Book_id
+    -> AND
+    -> L. Branch_id=C.Branch_id;
+Query OK, 0 rows affected (0.071 sec)
+
+MariaDB [LibraryDB_219]> SELECT * FROM V_BOOKS;
++---------+--------------------------+--------+
+| Book_id | Title                    | Copies |
++---------+--------------------------+--------+
+|    1001 | software engineering     |     50 |
+|    1001 | software engineering     |     10 |
+|    1002 | digital image processing |     80 |
+|    1003 | computer architecture    |     90 |
++---------+--------------------------+--------+
+4 rows in set (0.001 sec)
+
+MariaDB [LibraryDB_219]>
